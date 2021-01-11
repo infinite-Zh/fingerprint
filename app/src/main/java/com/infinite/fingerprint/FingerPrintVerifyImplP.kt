@@ -23,8 +23,12 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
     override fun authenticate(callback: FingerprintVerifyCallback) {
         this.callback=callback
+        cancellationSignal.setOnCancelListener {
+            callback.onCancel()
+        }
         biometricPrompt.setTitle("指纹识别")
             .setNegativeButton("取消", context.mainExecutor, { dialogInterface, i ->
+//                callback.onCancel()
             })
             .build().authenticate(
                 cryptoObject,
@@ -51,7 +55,10 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errMsgId, errString)
-                callback.onFail()
+                if (errMsgId==BiometricPrompt.BIOMETRIC_ERROR_CANCELED){
+                    callback.onCancel()
+                }
+
             }
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {

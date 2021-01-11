@@ -1,6 +1,7 @@
 package com.infinite.fingerprint
 
 import android.content.Context
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
@@ -46,12 +47,16 @@ class FingerprintVerifyImplM(context: Context) : IFingerprint {
 
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errMsgId, errString)
-                callback.onFail()
+                if (errMsgId == FingerprintManager.FINGERPRINT_ERROR_CANCELED) {
+                    callback.onCancel()
+                } else {
+                    callback.onError(errMsgId, errString)
+                }
             }
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpMsgId, helpString)
-
+                callback.onHelp(helpMsgId, helpString)
             }
         }
 

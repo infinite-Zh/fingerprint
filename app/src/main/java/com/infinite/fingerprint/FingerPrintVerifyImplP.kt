@@ -57,13 +57,15 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
                 super.onAuthenticationError(errMsgId, errString)
                 if (errMsgId==BiometricPrompt.BIOMETRIC_ERROR_CANCELED){
                     callback.onCancel()
+                }else{
+                    callback.onError(errMsgId, errString)
                 }
 
             }
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpMsgId, helpString)
-
+                callback.onHelp(helpMsgId,helpString)
             }
         }
 

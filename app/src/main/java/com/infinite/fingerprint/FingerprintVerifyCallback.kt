@@ -14,6 +14,9 @@ interface FingerprintVerifyCallback {
 
     fun onUsePassword()
 
+    fun onError(errMsgId: Int, errString: CharSequence?)
+
+    fun onHelp(helpMsgId: Int, helpString: CharSequence?)
 
 
 }

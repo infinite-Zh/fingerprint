@@ -1,17 +1,11 @@
 package com.infinite.fingerprint
 
 import android.content.Context
-import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
-import android.os.Handler
 import androidx.annotation.RequiresApi
-import androidx.annotation.RequiresPermission
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
-import androidx.core.os.CancellationSignal
 
 @RequiresApi(Build.VERSION_CODES.M)
 class FingerprintUtil(private val context: Context) : IFingerprint {
-
 
     companion object {
         private var instance: FingerprintUtil? = null
@@ -24,7 +18,6 @@ class FingerprintUtil(private val context: Context) : IFingerprint {
 
         }
     }
-
 
     override fun authenticate(callback: FingerprintVerifyCallback) {
         val sdk = Build.VERSION.SDK_INT

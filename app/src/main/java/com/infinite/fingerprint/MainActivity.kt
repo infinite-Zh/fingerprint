@@ -49,6 +49,12 @@ class MainActivity : AppCompatActivity() {
                             Log.e("finger","onUsePassword")
 
                         }
+
+                        override fun onError(errMsgId: Int, errString: CharSequence?) {
+                        }
+
+                        override fun onHelp(helpMsgId: Int, helpString: CharSequence?) {
+                        }
                     })
             }
 

@@ -7,6 +7,7 @@ import android.security.keystore.KeyProperties;
 
 import androidx.annotation.RequiresApi;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.Key;
 import java.security.KeyStore;
 
@@ -41,14 +42,8 @@ public class CipherHelper {
      *
      * @return
      */
-    public Cipher createCipher() {
-        Cipher cipher = null;
-        try {
-            cipher = createCipher(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cipher;
+    public Cipher createCipher() throws Exception {
+        return createCipher(true);
     }
 
     /**
@@ -60,11 +55,11 @@ public class CipherHelper {
      * @throws Exception
      */
     private Cipher createCipher(boolean retry) throws Exception {
-        Key key = GetKey();
         Cipher cipher = Cipher.getInstance(TRANSFORMATION); // Cipher c = Cipher.getInstance("DES/CBC/PKCS5Padding");
         try {
+            Key key = GetKey();
             cipher.init(Cipher.ENCRYPT_MODE | Cipher.DECRYPT_MODE, key);
-        } catch (KeyPermanentlyInvalidatedException e) {
+        } catch (InvalidAlgorithmParameterException e) {
             _keystore.deleteEntry(KEY_NAME);
             if (retry) {
                 createCipher(false);

@@ -1,11 +1,11 @@
 package com.infinite.fingerprint
 
 import android.content.Context
-import android.content.DialogInterface
 import android.hardware.biometrics.BiometricPrompt
 import android.os.Build
 import android.os.CancellationSignal
 import androidx.annotation.RequiresApi
+import javax.crypto.Cipher
 
 /***
  * 29以下指纹识别
@@ -19,23 +19,32 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
     private var mCypherHelper: CipherHelper = CipherHelper()
 
-    private var cryptoObject = BiometricPrompt.CryptoObject(mCypherHelper.createCipher())
+    private lateinit var cryptoObject :BiometricPrompt.CryptoObject
 
     override fun authenticate(callback: FingerprintVerifyCallback) {
-        this.callback=callback
-        cancellationSignal.setOnCancelListener {
-            callback.onCancel()
-        }
-        biometricPrompt.setTitle("指纹识别")
-            .setNegativeButton("取消", context.mainExecutor, { dialogInterface, i ->
+        var cipher: Cipher?
+        try {
+            cipher = mCypherHelper.createCipher()
+            cryptoObject = BiometricPrompt.CryptoObject(cipher!!)
+            this.callback = callback
+            cancellationSignal.setOnCancelListener {
+                callback.onCancel()
+            }
+            biometricPrompt.setTitle("指纹识别")
+                .setNegativeButton("取消", context.mainExecutor, { dialogInterface, i ->
 //                callback.onCancel()
-            })
-            .build().authenticate(
-                cryptoObject,
-                cancellationSignal,
-                context.mainExecutor,
-                authenticationCallback
-            )
+                })
+                .build().authenticate(
+                    cryptoObject,
+                    cancellationSignal,
+                    context.mainExecutor,
+                    authenticationCallback
+                )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callback.onError(-1,"请在手机中设置指纹解锁")
+        }
+
     }
 
     private val cancellationSignal = CancellationSignal()
@@ -55,9 +64,9 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
                 super.onAuthenticationError(errMsgId, errString)
-                if (errMsgId==BiometricPrompt.BIOMETRIC_ERROR_CANCELED){
+                if (errMsgId == BiometricPrompt.BIOMETRIC_ERROR_CANCELED) {
                     callback.onCancel()
-                }else{
+                } else {
                     callback.onError(errMsgId, errString)
                 }
 
@@ -65,7 +74,7 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
             override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
                 super.onAuthenticationHelp(helpMsgId, helpString)
-                callback.onHelp(helpMsgId,helpString)
+                callback.onHelp(helpMsgId, helpString)
             }
         }
 

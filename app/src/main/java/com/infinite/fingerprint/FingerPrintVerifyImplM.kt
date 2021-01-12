@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
+import javax.crypto.Cipher
 
 /***
  * 28以下指纹识别
@@ -16,6 +17,7 @@ class FingerprintVerifyImplM(context: Context) : IFingerprint {
     private val fmCompat = FingerprintManagerCompat.from(context)
 
     private lateinit var callback: FingerprintVerifyCallback
+    private var mCypherHelper: CipherHelper = CipherHelper()
 
     override fun authenticate(callback: FingerprintVerifyCallback) {
         this.callback = callback
@@ -28,7 +30,21 @@ class FingerprintVerifyImplM(context: Context) : IFingerprint {
             return
         }
 
-        fmCompat.authenticate(null, 0, cancellationSignal, authenticationCallback, null)
+        var cipher: Cipher? = null
+        try {
+            cipher = mCypherHelper.createCipher()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            callback.onError(-1, "请在手机中设置指纹解锁")
+        }
+
+        fmCompat.authenticate(
+            FingerprintManagerCompat.CryptoObject(cipher!!),
+            0,
+            cancellationSignal,
+            authenticationCallback,
+            null
+        )
     }
 
     private val cancellationSignal = CancellationSignal()

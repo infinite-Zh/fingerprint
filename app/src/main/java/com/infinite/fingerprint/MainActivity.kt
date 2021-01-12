@@ -1,17 +1,12 @@
 package com.infinite.fingerprint
 
-import android.content.Context
-import android.hardware.biometrics.BiometricManager
-import android.hardware.biometrics.BiometricPrompt
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.view.View
-import androidx.annotation.Nullable
-import androidx.annotation.RequiresPermission
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
-import androidx.core.os.CancellationSignal
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +46,13 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         override fun onError(errMsgId: Int, errString: CharSequence?) {
+                            Toast.makeText(this@MainActivity,errString,Toast.LENGTH_LONG).show()
+                            val intent= if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                                Intent(Settings.ACTION_BIOMETRIC_ENROLL)
+                            } else {
+                                Intent(Settings.ACTION_FINGERPRINT_ENROLL)
+                            }
+                            startActivity(intent)
                         }
 
                         override fun onHelp(helpMsgId: Int, helpString: CharSequence?) {

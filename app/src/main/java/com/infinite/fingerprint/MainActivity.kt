@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.abc)
             .setOnClickListener {
-                FingerprintUtil.getInstance(this)
+                FingerprintUtil.getInstance(applicationContext)
                     .authenticate(object : FingerprintVerifyCallback {
                         override fun onHardwareUndetected() {
                             Log.e("finger", "onHardwareUndetected")

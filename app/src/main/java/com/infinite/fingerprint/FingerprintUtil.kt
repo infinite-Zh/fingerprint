@@ -23,7 +23,7 @@ class FingerprintUtil(private val context: Context) : IFingerprint {
         val sdk = Build.VERSION.SDK_INT
         when {
             sdk < 23 -> {
-                callback.onFail()
+                callback.onHardwareUndetected()
             }
             sdk < Build.VERSION_CODES.P -> {
                 FingerprintVerifyImplM(context).authenticate(callback)

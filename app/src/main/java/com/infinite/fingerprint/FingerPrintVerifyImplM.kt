@@ -35,7 +35,7 @@ class FingerprintVerifyImplM(context: Context) : IFingerprint {
             cipher = mCypherHelper.createCipher()
         } catch (e: Exception) {
             e.printStackTrace()
-            callback.onError(-1, "请在手机中设置指纹解锁")
+            callback.onHasNoEnrollFingerprint()
         }
 
         fmCompat.authenticate(

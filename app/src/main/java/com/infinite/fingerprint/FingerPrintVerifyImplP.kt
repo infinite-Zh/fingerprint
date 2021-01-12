@@ -19,7 +19,7 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
 
     private var mCypherHelper: CipherHelper = CipherHelper()
 
-    private lateinit var cryptoObject :BiometricPrompt.CryptoObject
+    private lateinit var cryptoObject: BiometricPrompt.CryptoObject
 
     override fun authenticate(callback: FingerprintVerifyCallback) {
         var cipher: Cipher?
@@ -42,7 +42,7 @@ class FingerprintVerifyImplP(private val context: Context) : IFingerprint {
                 )
         } catch (e: Exception) {
             e.printStackTrace()
-            callback.onError(-1,"请在手机中设置指纹解锁")
+            callback.onHasNoEnrollFingerprint()
         }
 
     }

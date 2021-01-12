@@ -15,44 +15,44 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.abc)
             .setOnClickListener {
                 FingerprintUtil.getInstance(this)
-                    .authenticate(object :FingerprintVerifyCallback{
+                    .authenticate(object : FingerprintVerifyCallback {
                         override fun onHardwareUndetected() {
-                            Log.e("finger","onHardwareUndetected")
+                            Log.e("finger", "onHardwareUndetected")
                         }
 
                         override fun onHasNoEnrollFingerprint() {
-                            Log.e("finger","onHasNoEnrollFingerprint")
-
+                            val intent =
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                                    Intent(Settings.ACTION_BIOMETRIC_ENROLL)
+                                } else {
+                                    Intent(Settings.ACTION_FINGERPRINT_ENROLL)
+                                }
+                            startActivity(intent)
                         }
 
                         override fun onSuccess() {
-                            Log.e("finger","onSuccess")
+                            Log.e("finger", "onSuccess")
 
                         }
 
                         override fun onFail() {
-                            Log.e("finger","onFail")
+                            Log.e("finger", "onFail")
 
                         }
 
                         override fun onCancel() {
-                            Log.e("finger","onCancel")
+                            Log.e("finger", "onCancel")
 
                         }
 
                         override fun onUsePassword() {
-                            Log.e("finger","onUsePassword")
+                            Log.e("finger", "onUsePassword")
 
                         }
 
                         override fun onError(errMsgId: Int, errString: CharSequence?) {
-                            Toast.makeText(this@MainActivity,errString,Toast.LENGTH_LONG).show()
-                            val intent= if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                                Intent(Settings.ACTION_BIOMETRIC_ENROLL)
-                            } else {
-                                Intent(Settings.ACTION_FINGERPRINT_ENROLL)
-                            }
-                            startActivity(intent)
+                            Toast.makeText(this@MainActivity, errString, Toast.LENGTH_LONG).show()
+
                         }
 
                         override fun onHelp(helpMsgId: Int, helpString: CharSequence?) {
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
             }
 
     }
-
 
 
 }
